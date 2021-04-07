@@ -2,8 +2,8 @@
 // GB_mx_put_global: put the GraphBLAS status in MATLAB workspace
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -11,13 +11,12 @@
 
 void GB_mx_put_global
 (
-    bool cover,
-    GrB_Desc_Value AxB_method_used
+    bool cover
 )
 {
 
     //--------------------------------------------------------------------------
-    // check nmalloc
+    // free the complex type and operators
     //--------------------------------------------------------------------------
 
     Complex_finalize ( ) ;
@@ -26,7 +25,7 @@ void GB_mx_put_global
     // return the time to MATLAB, if it was computed
     //--------------------------------------------------------------------------
 
-    GB_mx_put_time (AxB_method_used) ;
+    GB_mx_put_time ( ) ;
 
     //--------------------------------------------------------------------------
     // log the statement coverage
@@ -40,11 +39,17 @@ void GB_mx_put_global
     // finalize GraphBLAS
     //--------------------------------------------------------------------------
 
-    if (GB_Global.nmalloc != 0)
+    GrB_finalize ( ) ;
+
+    //--------------------------------------------------------------------------
+    // check nmalloc
+    //--------------------------------------------------------------------------
+
+    int64_t nmalloc = GB_Global_nmalloc_get ( ) ;
+    if (nmalloc != 0)
     {
-        printf ("GraphBLAS nmalloc "GBd"! inuse "GBd" maxused "GBd"\n",
-            GB_Global.nmalloc, GB_Global.inuse, GB_Global.maxused) ;
-        mexErrMsgTxt ("memory leak!") ;
+        printf ("in GB_mx_put_global: GraphBLAS nmalloc "GBd"!\n", nmalloc) ;
+        mexErrMsgTxt ("memory leak in test!") ;
     }
 }
 

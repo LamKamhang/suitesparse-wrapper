@@ -2,8 +2,8 @@
 // GrB_Semiring_new: create a new semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -32,50 +32,27 @@
 GrB_Info GrB_Semiring_new           // create a semiring
 (
     GrB_Semiring *semiring,         // handle of semiring to create
-    const GrB_Monoid add,           // additive monoid of the semiring
-    const GrB_BinaryOp multiply     // multiply operator of the semiring
+    GrB_Monoid add,                 // additive monoid of the semiring
+    GrB_BinaryOp multiply           // multiply operator of the semiring
 )
-{
+{ 
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Semiring_new (&semiring, add, multiply)") ;
+    GB_WHERE1 ("GrB_Semiring_new (&semiring, add, multiply)") ;
     GB_RETURN_IF_NULL (semiring) ;
     (*semiring) = NULL ;
     GB_RETURN_IF_NULL_OR_FAULTY (add) ;
     GB_RETURN_IF_NULL_OR_FAULTY (multiply) ;
-    ASSERT_OK (GB_check (add, "semiring->add", GB0)) ;
-    ASSERT_OK (GB_check (multiply, "semiring->multiply", GB0)) ;
-
-    // z = multiply(x,y); type of z must match monoid z = add(z,z)
-    if (multiply->ztype != add->op->ztype)
-    { 
-        (*semiring) = NULL ;
-        return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-            "Semiring multiply output domain must match monoid domain"))) ;
-    }
+    ASSERT_MONOID_OK (add, "semiring->add", GB0) ;
+    ASSERT_BINARYOP_OK (multiply, "semiring->multiply", GB0) ;
 
     //--------------------------------------------------------------------------
     // create the semiring
     //--------------------------------------------------------------------------
 
-    // allocate the semiring
-    GB_CALLOC_MEMORY (*semiring, 1, sizeof (struct GB_Semiring_opaque)) ;
-    if (*semiring == NULL)
-    { 
-        return (GB_NO_MEMORY) ;
-    }
-
-    // initialize the semiring
-    GrB_Semiring s = *semiring ;
-    s->magic = GB_MAGIC ;
-    s->add = add ;
-    s->multiply = multiply ;
-    s->object_kind = GB_USER_RUNTIME ;
-
-    ASSERT_OK (GB_check (s, "new semiring", GB0)) ;
-    return (GrB_SUCCESS) ;
+    return (GB_Semiring_new (semiring, add, multiply)) ;
 }
 

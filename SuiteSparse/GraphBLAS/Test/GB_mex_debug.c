@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
-// GB_mex_debug: determine NDEBUG status
+// GB_mex_debug: determine GB_DEBUG status
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -22,7 +22,6 @@ void mexFunction
     bool malloc_debug = GB_mx_get_global (false) ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 4 || nargin != 0)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -36,12 +35,12 @@ void mexFunction
         printf ("GraphBLAS compilation and run-time options:\n") ;
     }
 
-    #ifndef NDEBUG
-    if (pr) printf ("NDEBUG:       debugging enabled:"
+    #ifdef GB_DEBUG
+    if (pr) printf ("GB_DEBUG:     debugging enabled:"
                                  " GraphBLAS will be slow\n") ;
     pargout [0] = mxCreateDoubleScalar (1) ;
     #else
-    if (pr) printf ("NDEBUG:       normal: debugging not enabled\n") ;
+    if (pr) printf ("GB_DEBUG:     normal: debugging not enabled\n") ;
     pargout [0] = mxCreateDoubleScalar (0) ;
     #endif
 
@@ -77,6 +76,6 @@ void mexFunction
         printf ("-------------------------------------------------------\n\n") ;
     }
 
-    GB_mx_put_global (false, 0) ;
+    GB_mx_put_global (false) ;
 }
 

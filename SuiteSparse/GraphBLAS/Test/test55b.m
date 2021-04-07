@@ -1,8 +1,8 @@
 function test55b
 %TEST55B test GrB_assign, illustrate duplicate indices, MATLAB vs GraphBLAS
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % MATLAB and GraphBLAS differ on how repeated indices are handled
 %
@@ -31,8 +31,6 @@ C2 = GB_mex_assign (a, [], 'plus', b, i0, j0)
 
 C1
 full (C2.matrix)
-
-%%%
 
 c = sparse ([ 1 2 3 4 5 ])
 i = uint64 (0)

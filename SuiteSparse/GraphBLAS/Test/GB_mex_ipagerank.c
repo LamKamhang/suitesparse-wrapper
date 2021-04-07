@@ -2,23 +2,23 @@
 // GB_mex_ipagerank: compute pagerank with an integer semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // This is for testing only.
 
 #include "GB_mex.h"
-#include "demos.h"
+#include "graphblas_demos.h"
 
 #define USAGE "[r,irank] = GB_mex_ipagerank (A)"
 
 #define FREE_ALL                        \
 {                                       \
-    if (P != NULL) free (P) ;           \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_mx_put_global (true, 0) ;        \
+    if (P != NULL) mxFree (P) ;         \
+    GrB_Matrix_free_(&A) ;               \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -33,9 +33,8 @@ void mexFunction
     GrB_Info info = GrB_SUCCESS ;
     GrB_Matrix A = NULL ;
     iPageRank *P = NULL ;
+    GrB_Index n = 0 ;
     bool malloc_debug = GB_mx_get_global (true) ;
-
-    GB_WHERE (USAGE) ;
 
     // check inputs
     if (nargout > 2 || nargin != 1)
@@ -51,13 +50,12 @@ void mexFunction
         mexErrMsgTxt ("failed") ;
     }
 
-    GrB_Index n ;
     GrB_Matrix_nrows (&n, A) ;
 
     // compute the iPageRank P
-    TIC ;
+    GB_MEX_TIC ;
     ipagerank (&P, A) ;
-    TOC ;
+    GB_MEX_TOC ;
 
     // return iPageRank to MATLAB
     pargout [0] = mxCreateDoubleMatrix (1, n, mxREAL) ;
@@ -74,6 +72,5 @@ void mexFunction
     }
 
     FREE_ALL ;
-    GrB_finalize ( ) ;
 }
 

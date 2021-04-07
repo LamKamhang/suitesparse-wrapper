@@ -6,8 +6,8 @@ function test12 (cover)
 % if cover=1, do quick statement coverage tests
 % if cover=0, run larger problems
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (nargin < 1)
     cover = 1 ;
@@ -22,17 +22,13 @@ end
 rng ('default') ;
 
 A = GB_mex_wathen (2,2) ;
-assert (spok (A) == 1) ;
+assert (GB_spok (A) == 1) ;
 assert (nnz (A-A') == 0) ;
 
-%% this test is too slow when debugging
+% this test is too slow when debugging
 debug = GB_mex_debug ;
 
 fprintf ('\nWathen matrices:\n') ;
-
-% if (debug)
-%     fprintf ('Wathen test skipped when GraphBLAS compiled with NDEBUG\n') ;
-% else
 
     for nx = [1 5 10] % 1:20
         fprintf ('%d:', nx) ;
